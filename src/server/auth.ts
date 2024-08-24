@@ -1,6 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import NextAuth, { type NextAuthResult, type DefaultSession } from "next-auth";
-import { type Adapter } from "next-auth/adapters";
+import NextAuth, { type DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "~/env";
@@ -42,8 +41,12 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         id: user.id,
       },
     }),
+    authorized: async ({ auth }) => {
+      // Logged in users are authenticated, otherwise redirect to login page
+      return !!auth;
+    },
   },
-  adapter: PrismaAdapter(db) as Adapter,
+  adapter: PrismaAdapter(db),
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,

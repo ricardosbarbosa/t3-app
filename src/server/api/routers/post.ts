@@ -10,6 +10,7 @@ export const postRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
+      console.log("Hello from tRPC!", process.env.DATABASE_URL);
       return {
         greeting: `Hello ${input.text}`,
       };
